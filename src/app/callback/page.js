@@ -1,9 +1,18 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from "react";
 
-function page() {
-  return (
-    <div>hello</div>
-  )
-}
+const Callback = () => {
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const code = query.get("code");
+    
+    if (code) {
+      // You can call a function here to fetch the access token
+      // For example, calling fetchAccessToken(code) from a utility file
+    }
+  }, []);
 
-export default page
+  return <div>Loading...</div>; // Show loading while processing
+};
+
+export default Callback;

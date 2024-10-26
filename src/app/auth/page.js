@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
 import React, { useEffect, useState } from "react";
 
-const SPOTIFY_CLIENT_ID = "9c0464258e4e49549ce8066ea3a06875"; 
-const SPOTIFY_CLIENT_SECRET = "1750fae5a6764fe4942cb7727109cc72"; 
-const SPOTIFY_REDIRECT_URI = 'http://localhost:3000/callback'; 
+const client_id = '9c0464258e4e49549ce8066ea3a06875'; 
+const client_secret = '1750fae5a6764fe4942cb7727109cc72';
+const redirect_uri = 'http://localhost:3000/callback'; 
 
 export default function Home() {
   const [token, setToken] = useState(null);
@@ -12,19 +12,19 @@ export default function Home() {
 
   const handleLogin = () => {
     const scope = "user-read-private user-read-email";
-    window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${SPOTIFY_CLIENT_ID}&scope=${encodeURIComponent(
+    window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${encodeURIComponent(
       scope
-    )}&redirect_uri=${encodeURIComponent(SPOTIFY_REDIRECT_URI)}`;
+    )}&redirect_uri=${encodeURIComponent(redirect_uri)}`;
   };
 
   const fetchAccessToken = async (code) => {
     const params = new URLSearchParams();
     params.append("code", code);
-    params.append("redirect_uri", SPOTIFY_REDIRECT_URI);
+    params.append("redirect_uri", redirect_uri);
     params.append("grant_type", "authorization_code");
 
     const authHeader =
-      "Basic " + Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString("base64");
+      "Basic " + Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
     try {
       const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -47,11 +47,11 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const path = window.location.pathname;
     const query = new URLSearchParams(window.location.search);
     const code = query.get("code");
     
-    if (path === "/callback" && code) {
+    // Assuming this page is the default page, you can remove the path check
+    if (code) {
       fetchAccessToken(code);
     }  
   }, []);
