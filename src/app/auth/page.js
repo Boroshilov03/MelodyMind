@@ -57,14 +57,47 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <h1>Login with Spotify</h1>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Login to start the fun!</h1>
       {token ? (
         <p>Access Token: {token}</p>
       ) : (
-        <button onClick={handleLogin}>Login with Spotify</button>
+        <button onClick={handleLogin} style={styles.button}>Login with Spotify</button>
       )}
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
     </div>
   );
 }
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    backgroundColor: '#121212',
+    color: '#fff',
+    fontFamily: 'Arial, sans-serif',
+  },
+  title: {
+    marginBottom: '20px',
+  },
+  button: {
+    backgroundColor: '#1DB954', // From spotify
+    color: '#fff',
+    border: 'none',
+    borderRadius: '30px',
+    padding: '15px 30px',
+    fontSize: '16px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  },
+};
+
+// HOVER
+styles.buttonHover = {
+  ...styles.button,
+  backgroundColor: '#1aa34a',
+};
