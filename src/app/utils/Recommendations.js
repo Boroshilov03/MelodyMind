@@ -11,10 +11,10 @@ export const fetchRecommendations = async (songLimit, emotion, accessToken) => {
   console.log("accessToken: ", accessToken)
   console.log(emotion)
   //console.log(emotionToTrackAttribute.has(emotion))
-  console.log(emotionToTrackAttribute.get(emotion))
+  console.log(emotionToTrackAttribute.get(emotion.toLowerCase()))
 
   try {
-    const allAttributes = emotionToTrackAttribute.get(emotion)
+    const allAttributes = emotionToTrackAttribute.get(emotion.toLowerCase())
     const trackAttr = allAttributes[0]
     const url = `https://api.spotify.com/v1/recommendations?limit=${songLimit}
       &seed_artists=4NHQUGzhtTLFvgF5SZesLK
