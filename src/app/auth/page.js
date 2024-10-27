@@ -25,7 +25,6 @@ export default function Home() {
           localStorage.setItem("spotifyToken", token);
           fetchRefreshToken();
         })
-
         .catch((error) => {
           console.error("Failed to fetch access token:", error);
         });
@@ -33,9 +32,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <h1>TITLE</h1>
-      <button onClick={handleLogin} style={styles.button}>Login with Spotify</button>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Ready to view your recommendations?</h1>
+      <button onClick={handleLogin} style={styles.button}>Log in with Spotify</button>
     </div>
   );
 }
@@ -52,10 +51,20 @@ const styles = {
     fontFamily: 'Arial, sans-serif',
   },
   title: {
+    fontSize: '48px',
+    fontWeight: 'bold',
     marginBottom: '20px',
+    background: 'linear-gradient(90deg, #1DB954, #1aa34a)',
+    WebkitBackgroundClip: 'text',
+    color: 'transparent',
+    letterSpacing: '2px',
+    textTransform: 'uppercase',
+    animation: 'fadeIn 1s ease-in-out',
+    fontFamily: 'Verdana, sans-serif', // Using Verdana font
+    textAlign: 'center', // Ensure text is centered
   },
   button: {
-    backgroundColor: '#1DB954', // From spotify
+    backgroundColor: '#1DB954', // From Spotify
     color: '#fff',
     border: 'none',
     borderRadius: '30px',
@@ -72,3 +81,23 @@ styles.buttonHover = {
   ...styles.button,
   backgroundColor: '#1aa34a',
 };
+
+// Add the keyframes for fadeIn animation
+const fadeInAnimation = `
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px); // Start slightly above
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); // Move to original position
+  }
+}
+`;
+
+// Append the style to the document head
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = fadeInAnimation;
+document.head.appendChild(styleSheet);
