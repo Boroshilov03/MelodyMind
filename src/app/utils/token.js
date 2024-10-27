@@ -2,7 +2,7 @@
 
 const client_id = '9c0464258e4e49549ce8066ea3a06875';
 const client_secret = '1750fae5a6764fe4942cb7727109cc72';
-const redirect_uri = 'http://localhost:3000/recs';
+const redirect_uri = 'http://localhost:3000';
 
 export const fetchAccessToken = async (code) => {
   const params = new URLSearchParams();

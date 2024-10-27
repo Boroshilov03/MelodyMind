@@ -18,7 +18,7 @@ export default async function Page() {
   const navItems = [
     { name: "About", link: "/home" },
     { name: "Home", link: "/" },
-    { name: "Songs", link: "/generate" },
+    { name: "Songs", link: "/recs" },
   ];
 
   return (

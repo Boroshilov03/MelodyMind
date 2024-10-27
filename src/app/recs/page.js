@@ -8,9 +8,9 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
-  const [token, setAccessToken] = useState(null); // State for access token
+  const token = localStorage.getItem('access_token'); // State for access token
 
-    const emotion = "adoration";
+  const emotion = "adoration";
 
   // Fetch the access token on component mount
   useEffect(() => {
