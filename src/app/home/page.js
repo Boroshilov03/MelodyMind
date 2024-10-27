@@ -6,7 +6,6 @@ import { ShootingStars } from "@/components/ui/shooting-stars";
 import { FloatingNav } from "@/components/ui/floating-navbar";
 import { Spotlight } from "@/components/ui/Spotlight";
 import {
-  TypewriterEffect,
   TypewriterEffectSmooth,
 } from "@/components/ui/typewriter-effect";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
@@ -53,9 +52,15 @@ function Page() {
         <ShootingStars />
 
         <div className="flex flex-row z-10 w-full px-10 mx-auto">
-          <TypewriterEffectSmooth words={leftwords} />
+          {/* Increased margin-left for the left text */}
+          <div className="ml-40">
+            <TypewriterEffectSmooth words={leftwords} />
+          </div>
           <div className="flex flex-row justify-center items-center z-10 w-full px-10 mx-auto">
-            <TypewriterEffectSmooth words={rightwords} />
+            {/* Increased margin-left significantly to move the right text further to the right */}
+            <div className="ml-80">  {/* Increased margin to ml-80 */}
+              <TypewriterEffectSmooth words={rightwords} delay={2000} />
+            </div>
           </div>
         </div>
 
@@ -66,14 +71,14 @@ function Page() {
       <HoverBorderGradient
         onClick={redirectToMessaging}
         containerClassName="absolute text-lg font-bold"
-        duration={2} // Change speed of the gradient rotation (in seconds)
-        clockwise={true} // Set to false for counter-clockwise rotation
-        as="button" // You can change the HTML tag used (button, div, etc.)
+        duration={2}
+        clockwise={true}
+        as="button"
         style={{
           top: "90%",
           left: "51%",
           transform: "translate(-50%, 0%)",
-          zIndex: 10, // Increase this value as needed
+          zIndex: 10,
         }}
       >
         Get started!
