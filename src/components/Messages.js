@@ -56,12 +56,58 @@ const emotionColors = {
 export default function Messages() {
   const { messages } = useVoice();
 
+  // Mock data to visualize UI
+  const mockMessages = [
+    {
+      type: "user_message",
+      message: {
+        content: "I love this new feature!",
+        models: {
+          prosody: {
+            scores: {
+              love: 0.9,
+              joy: 0.8,
+              admiration: 0.7,
+              contentment: 0.6,
+            },
+          },
+        },
+      },
+    },
+    {
+      type: "user_message",
+      message: {
+        content: "I'm feeling a bit anxious about the deadline.",
+        models: {
+          prosody: {
+            scores: {
+              anxiety: 0.8,
+              sadness: 0.5,
+              doubt: 0.4,
+              distress: 0.3,
+            },
+          },
+        },
+      },
+    },
+    {
+      type: "assistant_message",
+      message: {
+        role: "assistant",
+        content: "Don't worry, we will get through this together!",
+      },
+    },
+  ];
+
+  // Use either actual messages from useVoice or mock messages for development
+  const actualMessages = messages.length > 0 ? messages : mockMessages;
+
   // Filter for only "user_message" types and extract top 4 emotions
-  const userMessagesTopEmotions = messages
+  const userMessagesTopEmotions = actualMessages
     .filter((message) => message.type === "user_message")
     .map((message) => {
       // Get the emotion scores
-      const scores = message.models?.prosody?.scores;
+      const scores = message.models?.prosody?.scores || {};
 
       // Sort emotions by score and take the top 4
       const topEmotions = Object.entries(scores)
@@ -78,13 +124,10 @@ export default function Messages() {
       };
     });
 
-  console.log(userMessagesTopEmotions);
-
   return (
     <div>
       {userMessagesTopEmotions.map((msg, index) => (
         <div key={`user_message_${index}`}>
-          <div>{msg.content}</div>
           <div>
             {Object.entries(msg.topEmotions).map(([emotion, color]) => (
               <span
@@ -101,11 +144,11 @@ export default function Messages() {
           </div>
         </div>
       ))}
-      {messages.map((msg, index) => {
+      {actualMessages.map((msg, index) => {
         if (msg.type === "user_message" || msg.type === "assistant_message") {
           return (
             <div key={msg.type + index}>
-              <div>{msg.message.role}</div>
+              <div>{msg.message.role || "User"}</div>
               <TextGenerateEffect
                 duration={2}
                 filter={false}

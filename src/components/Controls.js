@@ -15,15 +15,15 @@ export default function Controls() {
   }
   return (
     <button
-      onClick={() => {
-        connect()
-          .then(() => {
-            /* handle success */
-          })
-          .catch(() => {
-            /* handle error */
-          });
-      }}
+    //   onClick={() => {
+    //     connect()
+    //       .then(() => {
+    //         /* handle success */
+    //       })
+    //       .catch(() => {
+    //         /* handle error */
+    //       });
+    //   }}
     >
       Start Session
     </button>
