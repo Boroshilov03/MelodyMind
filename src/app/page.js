@@ -16,9 +16,9 @@ export default async function Page() {
 
   // Define your nav items
   const navItems = [
-    { name: "About", link: "/home" },
-    { name: "Home", link: "/" },
-    { name: "Songs", link: "/generate" },
+    { name: "Home", link: "/home" },
+    { name: "Chat", link: "/" },
+    { name: "Recommendations", link: "/recs" },
   ];
 
   return (
