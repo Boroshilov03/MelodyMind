@@ -9,8 +9,7 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
   const [token, setAccessToken] = useState(null); // State for access token
-
-  const emotion = "adoration";
+  const [emotion, setEmotion] = useState(null);
 
   // Fetch the access token on component mount
   useEffect(() => {
@@ -35,10 +34,10 @@ export default function Recommendations() {
       console.log("Errors with login or access token.");
     } else {
       if (!emotion) {
-        console.log("No emotions to base recommendation off of.");
+        setEmotion("love");
       } else {
         console.log("Generating recommendations..."); // Log to console
-        const tracks = await fetchRecommendations(6, emotion, token); // Pass access token
+        const tracks = await fetchRecommendations(7, emotion, token); // Pass access token
         setRecommendations(tracks);
         console.log(tracks);
       }
