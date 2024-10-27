@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { fetchRecommendations } from "../utils/Recommendations";
 import { fetchAccessToken } from "../utils/token";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
+import { FloatingNav } from "@/components/ui/floating-navbar";
+
 
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
@@ -52,21 +54,35 @@ export default function Recommendations() {
     );
   });
 
+  const navItems = [
+    { name: "Home", link: "/home" },
+    { name: "Chat", link: "/" },
+    { name: "Recommendations", link: "/recs" },
+  ];
+
   return (
     <section style={styles.container}>
+      <div style={styles.navbarWrapper}>
+        <FloatingNav navItems={navItems} />
+      </div>
       <h2 style={styles.title}>Recommended Songs</h2>
       <p style={styles.emotionDisplay}>Current Emotion: <strong>{emotion}</strong></p>
-
+  
       <button onClick={getRecommendations} style={styles.button}>
         Generate Recommendations
       </button>
-
+  
       <Carousel items={cards} />
     </section>
   );
 }
 
 const styles = {
+  navbarWrapper: {
+    width: '100%',
+    position: 'relative',
+    zIndex: 1000, 
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -74,6 +90,7 @@ const styles = {
     justifyContent: 'flex-start',
     height: '100vh',
     paddingTop: '20px',
+    paddingTop: '120px',
     backgroundColor: '#121212',
     color: '#fff',
     fontFamily: 'Arial, sans-serif',
@@ -81,7 +98,7 @@ const styles = {
   title: {
     fontSize: '48px',
     fontWeight: 'bold',
-    marginBottom: '5px',
+    marginBottom: '20px', // Increased margin to create space below the title
     background: 'linear-gradient(90deg, #1DB954, #1aa34a)',
     WebkitBackgroundClip: 'text',
     color: 'transparent',
