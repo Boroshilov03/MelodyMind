@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVoice } from "@humeai/voice-react";
