@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"; // Ensure this utility is defined
 import Link from "next/link";
 import { fetchAccessToken, fetchRefreshToken } from "../../app/utils/token";
 
-const client_id = '9c0464258e4e49549ce8066ea3a06875';
+const client_id = 'e2ba0c87e0844990a438ef6e39177931';
 const redirect_uri = 'http://localhost:3000/recs';
 
 export const FloatingNav = ({ navItems, className }) => {
