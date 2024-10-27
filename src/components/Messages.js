@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVoice } from "@humeai/voice-react";
@@ -173,7 +172,7 @@ export default function Messages() {
   }, [actualMessages]);
 
   return (
-    <div className="absolute py-32 w-full h-screen bg-gradient-to-b from-[#1a1625] to-[#3A2541] overflow-hidden">
+    <div className="absolute py-32 w-full h-screen bg-gradient-to-b from-[#1a1625] to-[#3A2541] shadow-md overflow-hidden">
       <ShootingStars />
 
       <div className="absolute top-8 right-8">
@@ -186,7 +185,28 @@ export default function Messages() {
           <div className="w-3 h-3 rounded-full bg-[#c4a57d] opacity-30 absolute bottom-4 right-3" />
         </motion.div>
       </div>
-
+      {/* Stars */}
+      <div className="absolute inset-0">
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              opacity: [0.2, 0.8, 0.2],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 2 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
+      </div>
       <div className="relative z-10 w-full max-w-3xl mx-auto p-6 h-full">
         <motion.div
           className="flex items-center space-x-2 mb-6"
@@ -266,7 +286,7 @@ export default function Messages() {
                           )}
                       </div>
 
-                      <div className="bg-[#2a2435] rounded-lg text-white max-w-4xl backdrop-blur-sm bg-opacity-80 py-3 px-4 shadow-md">
+                      <div className="bg-gradient-to-b from-[#453b60] to-[#3a25416b] overflow-hidden rounded-lg text-white max-w-4xl backdrop-blur-sm bg-opacity-80 py-3 px-4 shadow-md">
                         <TextGenerateEffect
                           duration={2}
                           filter={false}
