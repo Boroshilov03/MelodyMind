@@ -3,16 +3,26 @@
 import React, { useEffect } from "react";
 import { fetchAccessToken, fetchRefreshToken } from "../utils/token";
 
-const client_id = '9c0464258e4e49549ce8066ea3a06875';
+const client_id = 'e2ba0c87e0844990a438ef6e39177931';
 const redirect_uri = 'http://localhost:3000/recs';
 
 export default function Home() {
   const handleLogin = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const emotion = urlParams.get('emotion');
+  
+    // Store the emotion in local storage
+    if (emotion) {
+      localStorage.setItem('selectedEmotion', emotion);
+    }
+  
     const scope = "user-read-private user-read-email user-top-read";
-    window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${encodeURIComponent(
-      scope
-    )}&redirect_uri=${encodeURIComponent(redirect_uri)}`;
+    const redirectUri = encodeURIComponent(redirect_uri);
+    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${encodeURIComponent(scope)}&redirect_uri=${redirectUri}`;
+    
+    window.location.href = authUrl;
   };
+  
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -25,7 +35,6 @@ export default function Home() {
           localStorage.setItem("spotifyToken", token);
           fetchRefreshToken();
         })
-
         .catch((error) => {
           console.error("Failed to fetch access token:", error);
         });
@@ -33,9 +42,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <h1>TITLE</h1>
-      <button onClick={handleLogin} style={styles.button}>Login with Spotify</button>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Ready to view your recommendations?</h1>
+      <button onClick={handleLogin} style={styles.button}>Log in with Spotify</button>
     </div>
   );
 }
@@ -52,10 +61,20 @@ const styles = {
     fontFamily: 'Arial, sans-serif',
   },
   title: {
+    fontSize: '48px',
+    fontWeight: 'bold',
     marginBottom: '20px',
+    background: 'linear-gradient(90deg, #1DB954, #1aa34a)',
+    WebkitBackgroundClip: 'text',
+    color: 'transparent',
+    letterSpacing: '2px',
+    textTransform: 'uppercase',
+    animation: 'fadeIn 1s ease-in-out',
+    fontFamily: 'Verdana, sans-serif',
+    textAlign: 'center',
   },
   button: {
-    backgroundColor: '#1DB954', // From spotify
+    backgroundColor: '#1DB954',
     color: '#fff',
     border: 'none',
     borderRadius: '30px',
@@ -67,8 +86,22 @@ const styles = {
   },
 };
 
-// HOVER
-styles.buttonHover = {
-  ...styles.button,
-  backgroundColor: '#1aa34a',
-};
+// Add the keyframes for fadeIn animation
+const fadeInAnimation = `
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+`;
+
+// Append the style to the document head
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = fadeInAnimation;
+document.head.appendChild(styleSheet);

@@ -1,9 +1,38 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { cn } from "@/lib/utils"; // Ensure this utility is defined
 import Link from "next/link";
+import { fetchAccessToken, fetchRefreshToken } from "../../app/utils/token";
+
+const client_id = 'e2ba0c87e0844990a438ef6e39177931';
+const redirect_uri = 'http://localhost:3000/recs';
 
 export const FloatingNav = ({ navItems, className }) => {
+  const handleLogin = () => {
+    const scope = "user-read-private user-read-email user-top-read";
+    window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${encodeURIComponent(
+      scope
+    )}&redirect_uri=${encodeURIComponent(redirect_uri)}`;
+  };
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const code = query.get("code");
+    
+    if (code) {
+      fetchAccessToken(code)
+        .then((token) => {
+          console.log("Access Token:", token);
+          localStorage.setItem("spotifyToken", token);
+          fetchRefreshToken();
+        })
+
+        .catch((error) => {
+          console.error("Failed to fetch access token:", error);
+        });
+    }  
+  }, []);
+
   return (
     <div
       className={cn(
@@ -24,6 +53,8 @@ export const FloatingNav = ({ navItems, className }) => {
         </Link>
       ))}
       <button
+        onClick={handleLogin}
+        aria-label="Login To Spotify"
         className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full 
   transition-colors duration-300 ease-in-out hover:bg-[#1DB954] hover:text-white"
       >

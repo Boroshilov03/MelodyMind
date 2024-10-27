@@ -11,14 +11,14 @@ export const fetchRecommendations = async (songLimit, emotion, accessToken) => {
   console.log("accessToken: ", accessToken)
   console.log(emotion)
   //console.log(emotionToTrackAttribute.has(emotion))
-  console.log(emotionToTrackAttribute.get(emotion))
+  console.log(emotionToTrackAttribute.get(emotion.toLowerCase()))
 
   try {
-    const allAttributes = emotionToTrackAttribute.get(emotion)
+    const allAttributes = emotionToTrackAttribute.get(emotion.toLowerCase())
     const trackAttr = allAttributes[0]
     const url = `https://api.spotify.com/v1/recommendations?limit=${songLimit}
       &seed_artists=4NHQUGzhtTLFvgF5SZesLK
-      &seed_genres=acoustic,pop,r-n-b
+      &seed_genres=anime,pop,movies
       &seed_tracks=0c6xIDDpzE81m2q797ordA
       &min_acousticness=${trackAttr.min_acousticness}
       &max_acousticness=${trackAttr.max_acousticness}
@@ -78,6 +78,7 @@ export const fetchRecommendations = async (songLimit, emotion, accessToken) => {
       trackName: track.name,
       albumImage: track.album.images[0].url,
       spotifyLink: track.external_urls.spotify,
+      uri: track.uri
     }));
   } catch (error) {
     console.error("Error fetching recommendations:", error);

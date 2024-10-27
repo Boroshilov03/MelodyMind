@@ -162,13 +162,25 @@ export const Card = ({
 
   useOutsideClick(containerRef, () => handleClose());
 
-  const handleOpen = () => {
+  const handleOpen = (event) => {
+    // Prevent default behavior to avoid interfering with the link redirection
+    event.stopPropagation();
+    
+    // Open the card (if needed for your design)
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
     onCardClose(index);
+  };
+
+  // This function will redirect to the song link when the card is clicked
+  const redirectToSong = () => {
+    const trackLink = card.spotifyLink; // Check if external_urls and spotify exist
+    if (trackLink) {
+      window.open(trackLink, '_blank'); // Open in a new tab
+    }
   };
 
   return (<>
@@ -209,7 +221,10 @@ export const Card = ({
     </AnimatePresence>
     <motion.button
       layoutId={layout ? `card-${card.trackName}` : undefined}
-      onClick={handleOpen}
+      onClick={(event) => {
+        handleOpen(event); 
+        redirectToSong(); 
+      }}
       className="rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[30rem] md:w-96 overflow-hidden flex flex-col items-start justify-start relative z-10">
       <div
         className="absolute h-full top-0 inset-x-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-30 pointer-events-none" />
@@ -229,10 +244,11 @@ export const Card = ({
         src={card.albumImage}
         alt={card.trackName}
         fill
-        className="object-cover absolute z-10 inset-0" />
+        className="object-cover absolute z-10" />
     </motion.button>
   </>);
 };
+
 
 export const BlurImage = ({
   height,
