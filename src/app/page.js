@@ -2,6 +2,7 @@
 import ClientComponent from "@/components/ClientComponent";
 import { fetchAccessToken } from "hume";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { FloatingNav } from "@/components/ui/floating-navbar";
 
 export default async function Page() {
   const accessToken = await fetchAccessToken({
@@ -10,11 +11,19 @@ export default async function Page() {
   });
 
   if (!accessToken) {
-    throw new Error();
+    return <div>Error fetching access token.</div>; // Handle error gracefully
   }
+
+  // Define your nav items
+  const navItems = [
+    { name: "About", link: "/home" },
+    { name: "Home", link: "/" },
+    { name: "Songs", link: "/generate" },
+  ];
 
   return (
     <BackgroundBeamsWithCollision className="custom-beam-styles">
+      <FloatingNav navItems={navItems} />
       <ClientComponent accessToken={accessToken} />
     </BackgroundBeamsWithCollision>
   );

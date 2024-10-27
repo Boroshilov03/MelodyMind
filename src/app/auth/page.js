@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useEffect } from "react";
-import { fetchAccessToken } from "../utils/token";
+import { fetchAccessToken, fetchRefreshToken } from "../utils/token";
 
 const client_id = '9c0464258e4e49549ce8066ea3a06875';
-const redirect_uri = 'http://localhost:3000/callback';
+const redirect_uri = 'http://localhost:3000/recs';
 
 export default function Home() {
   const handleLogin = () => {
-    const scope = "user-read-private user-read-email";
+    const scope = "user-read-private user-read-email user-top-read";
     window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${encodeURIComponent(
       scope
     )}&redirect_uri=${encodeURIComponent(redirect_uri)}`;
@@ -23,6 +23,7 @@ export default function Home() {
         .then((token) => {
           console.log("Access Token:", token);
           localStorage.setItem("spotifyToken", token);
+          fetchRefreshToken();
         })
 
         .catch((error) => {
