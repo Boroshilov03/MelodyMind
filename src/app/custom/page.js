@@ -173,9 +173,7 @@ const Page = () => {
   WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
   textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
 }}>
-  J<br/>
-  O<br/>
-  Y
+  JOY
 </div>
 
 <div style={{
@@ -205,9 +203,7 @@ const Page = () => {
   WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
   textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
 }}>
-  S<br/>
-  A<br/>
-  D
+  SAD
 </div>
 
 
