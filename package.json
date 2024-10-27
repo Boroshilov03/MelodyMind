@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/dancing-script": "^5.1.0",
     "@humeai/voice-react": "^0.1.17",
     "@splinetool/react-spline": "^4.0.0",
     "@splinetool/runtime": "^1.9.35",

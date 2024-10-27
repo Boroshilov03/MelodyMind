@@ -15,17 +15,23 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        dynapuff: ['"DynaPuff"', 'cursive'], // Add DynaPuff font
+        sora: ['"Sora"', 'sans-serif'], // Add Sora font
+        dancing: ['"Dancing Script"', 'cursive'], // Add Dancing Script font
+        ibmPlexMono: ['"IBM Plex Mono"', 'monospace'], // Add IBM Plex Mono font
+      },
     },
   },
   plugins: [addVariablesForColors],
 };
 
-function addVariablesForColors({ addBase, theme }){
+function addVariablesForColors({ addBase, theme }) {
   let allColors = flattenColorPalette(theme("colors"));
   let newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
- 
+
   addBase({
     ":root": newVars,
   });
