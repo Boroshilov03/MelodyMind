@@ -254,7 +254,7 @@ const Page = () => {
             key={index}
             style={{
               position: 'absolute',
-              left: area.position.x === 0 ? '18%' : area.position.x === 100 ? 'auto' : '50%',
+              left: area.position.x === 0 ? '23%' : area.position.x === 100 ? 'auto' : '50%',
               right: area.position.x === 100 ? '3%' : 'auto',
               bottom: area.position.y === 100 ? '3%' : 'auto',
               top: area.position.y === 0 ? '3%' : area.position.y === 50 ? '50%' : 'auto',

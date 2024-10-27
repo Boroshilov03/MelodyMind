@@ -23,6 +23,7 @@ export const fetchAccessToken = async (code) => {
       body: params.toString(),
     });
 
+    console.log(response);
     if (!response.ok) throw new Error("Failed to fetch access token");
 
     const data = await response.json();

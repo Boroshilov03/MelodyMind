@@ -5,10 +5,17 @@ import { fetchAccessToken } from "../utils/token";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import { FloatingNav } from "@/components/ui/floating-navbar";
 
+
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
   const [token, setAccessToken] = useState(null);
   const [emotion, setEmotion] = useState(null);
+
+  const navItems = [
+    { name: "Home", link: "/home" },
+    { name: "Chat", link: "/" },
+    { name: "Recommendations", link: "/recs" },
+  ];
 
   useEffect(() => {
     const storedEmotion = localStorage.getItem("selectedEmotion");
@@ -69,7 +76,7 @@ export default function Recommendations() {
       <button onClick={getRecommendations} style={styles.button}>
         Generate Recommendations
       </button>
-
+  
       <Carousel items={cards} />
     </section>
   );
@@ -77,21 +84,21 @@ export default function Recommendations() {
 
 const styles = {
   navbarWrapper: {
-    width: "100%",
-    position: "relative",
-    zIndex: 1000,
+    width: '100%',
+    position: 'relative',
+    zIndex: 1000, 
   },
   container: {
-    display: "flex",
-    marginTop: "100px",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    height: "100vh",
-    paddingTop: "20px",
-    backgroundColor: "#121212",
-    color: "#fff",
-    fontFamily: "Arial, sans-serif",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    height: '100vh',
+    paddingTop: '20px',
+    paddingTop: '120px',
+    backgroundColor: '#121212',
+    color: '#fff',
+    fontFamily: 'Arial, sans-serif',
   },
   title: {
     fontSize: "48px",
