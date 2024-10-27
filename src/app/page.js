@@ -2,6 +2,7 @@
 import ClientComponent from "@/components/ClientComponent";
 import { fetchAccessToken } from "hume";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+
 export default async function Page() {
   const accessToken = await fetchAccessToken({
     apiKey: String(process.env.HUME_API_KEY),
