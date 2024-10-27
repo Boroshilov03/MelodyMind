@@ -1,22 +1,27 @@
-// Purpose:  After the user logs in and provides their input (feeling or genre), your code will fetch song recommendations from the Spotify API.
 
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { fetchAccessToken } from './token'; // Import the fetchAccessToken function
 
-// This function fetches recommendations from Spotify based on user input
-const fetchRecommendations = async (seedGenres) => {
+// This function fetches recommendations from Spotify based on predefined parameters
+export const fetchRecommendations = async (userInput, accessToken) => {
+  console.log("callig fetching")
+  console.log("userInput: ", userInput)
+  console.log("accessToken: ", accessToken)
+
   try {
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?limit=5&market=US&seed_genres=${seedGenres}`,
+      `https://api.spotify.com/v1/recommendations?limit=${userInput.limit}&market=${userInput.market}&seed_artists=${userInput.seed_artists}&seed_genres=${userInput.seed_genres}&seed_tracks=${userInput.seed_tracks}&target_danceability=${userInput.target_danceability}`,
       {
         headers: {
-          Authorization: `Bearer YOUR_SPOTIFY_ACCESS_TOKEN`, // Replace with the actual access token
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
 
+    console.log("response: ", response)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -36,18 +41,19 @@ const fetchRecommendations = async (seedGenres) => {
   }
 };
 
-export default function Recommendations({ userInput }) {
+// Main Recommendations component
+export default function Recommendations({ accessToken }) {
   const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
     const getRecommendations = async () => {
-      if (userInput) {
-        const tracks = await fetchRecommendations(userInput);
+      if (accessToken) { // Check if access token is available
+        const tracks = await fetchRecommendations(accessToken); // Pass access token
         setRecommendations(tracks);
       }
     };
     getRecommendations();
-  }, [userInput]);
+  }, [accessToken]); // Re-fetch recommendations when access token changes
 
   return (
     <section>
