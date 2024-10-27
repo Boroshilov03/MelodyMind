@@ -30,6 +30,12 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        dynapuff: ['"DynaPuff"', 'cursive'], // Add DynaPuff font
+        sora: ['"Sora"', 'sans-serif'], // Add Sora font
+        dancing: ['"Dancing Script"', 'cursive'], // Add Dancing Script font
+        ibmPlexMono: ['"IBM Plex Mono"', 'monospace'], // Add IBM Plex Mono font
+      },
     },
   },
   plugins: [addVariablesForColors],
