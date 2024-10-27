@@ -4,7 +4,6 @@ import { fetchRecommendations } from "../utils/Recommendations";
 import { fetchAccessToken } from "../utils/token";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import { FloatingNav } from "@/components/ui/floating-navbar";
-import { FloatingNav } from "@/components/ui/floating-navbar";
 
 
 export default function Recommendations() {
@@ -66,11 +65,6 @@ export default function Recommendations() {
     );
   });
 
-  const navItems = [
-    { name: "Home", link: "/home" },
-    { name: "Chat", link: "/" },
-    { name: "Recommendations", link: "/recs" },
-  ];
 
   return (
     <section style={styles.container}>
@@ -95,15 +89,16 @@ const styles = {
     zIndex: 1000, 
   },
   container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    height: "100vh",
-    paddingTop: "20px",
-    backgroundColor: "#121212",
-    color: "#fff",
-    fontFamily: "Arial, sans-serif",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    height: '100vh',
+    paddingTop: '20px',
+    paddingTop: '120px',
+    backgroundColor: '#121212',
+    color: '#fff',
+    fontFamily: 'Arial, sans-serif',
   },
   title: {
     fontSize: "48px",
