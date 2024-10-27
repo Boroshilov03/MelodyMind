@@ -2,37 +2,63 @@
 import React, { useState, useRef, useEffect } from "react";
 import { LampDemo } from "@/components/ui/lamp";
 
+// Function to blend colors based on proximity
+const blendColors = (colors) => {
+  let r = 0, g = 0, b = 0;
+  let totalWeight = 0;
+
+  colors.forEach(({ color, weight }) => {
+    const [rVal, gVal, bVal] = color.match(/\w\w/g).map(c => parseInt(c, 16));
+    r += rVal * weight;
+    g += gVal * weight;
+    b += bVal * weight;
+    totalWeight += weight;
+  });
+
+  r = Math.round(r / totalWeight);
+  g = Math.round(g / totalWeight);
+  b = Math.round(b / totalWeight);
+
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 const Page = () => {
   const [moodPosition, setMoodPosition] = useState({ x: 50, y: 50 }); // Circle position
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 }); // To store offset when dragging
   const containerRef = useRef(null);
-  
 
-    // Calculate the mood color based on moodPosition
-    const getMoodColor = () => {
-        const { x, y } = moodPosition;
-    
-        for (const area of colorAreas) {
-          const distance = Math.sqrt(Math.pow(x - area.position.x, 2) + Math.pow(y - area.position.y, 2));
-          if (distance < area.size) {
-            return area.color; // Return the color of the mood area if within range
-          }
-        }
-        return '#000'; // Default color if no area is selected
-      };
-  
-  // Mood areas for color change
+  // Mood areas for color blending
   const colorAreas = [
-    { color: 'red', position: { x: 50, y: 5 }, size: 25 },    // Top (Anger)
-    { color: 'yellow', position: { x: 95, y: 50 }, size: 25 }, // Right (Joy)
-    { color: 'purple', position: { x: 50, y: 95 }, size: 25 },   // Bottom (Fear)
-    { color: 'blue', position: { x: 5, y: 50 }, size: 25 }, // Left (Sad)
+    { color: '#ff0000', position: { x: 50, y: 0 }, size: 60 },     // Top (Anger)
+    { color: '#ffff00', position: { x: 100, y: 50 }, size: 60 },   // Right (Joy)
+    { color: '#800080', position: { x: 50, y: 100 }, size: 60 },   // Bottom (Fear)
+    { color: '#0000ff', position: { x: 0, y: 50 }, size: 60 },     // Left (Sad)
   ];
+
+  // Calculate the mood color based on moodPosition
+  const getMoodColor = () => {
+    const { x, y } = moodPosition;
+    let colorsInRange = [];
+
+    colorAreas.forEach((area) => {
+      const distance = Math.sqrt(Math.pow(x - area.position.x, 2) + Math.pow(y - area.position.y, 2));
+      if (distance < area.size) {
+        const weight = 1 - distance / area.size; // Weight decreases with distance
+        colorsInRange.push({ color: area.color, weight });
+      }
+    });
+
+    if (colorsInRange.length > 0) {
+      return blendColors(colorsInRange); // Blend colors based on proximity
+    }
+
+    return '#000000'; // Default color if no area is selected
+  };
 
   const handleMouseDown = (event) => {
     setIsDragging(true);
-    
+
     // Calculate the offset of the cursor from the circle's center
     const circleX = moodPosition.x * window.innerWidth / 100; // Convert to pixels
     const circleY = moodPosition.y * window.innerHeight / 100; // Convert to pixels
@@ -40,7 +66,7 @@ const Page = () => {
       x: event.clientX - circleX,
       y: event.clientY - circleY,
     });
-    
+
     event.preventDefault(); // Prevent text selection while dragging
   };
 
@@ -62,17 +88,7 @@ const Page = () => {
   };
 
   // Change background color based on proximity to mood areas
-  const getBackgroundColor = () => {
-    const { x, y } = moodPosition;
-
-    for (const area of colorAreas) {
-      const distance = Math.sqrt(Math.pow(x - area.position.x, 2) + Math.pow(y - area.position.y, 2));
-      if (distance < area.size) {
-        return area.color; // Change to the color of the mood area if within range
-      }
-    }
-    return '#f0f0f0'; // Default color
-  };
+  const getBackgroundColor = () => getMoodColor();
 
   useEffect(() => {
     const handleMouseUpEvent = () => {
@@ -110,7 +126,7 @@ const Page = () => {
     >
       {/* Pass the mood color to LampDemo */}
       <LampDemo moodColor={getMoodColor()} />
-      
+
       {/* Circle and mood labels */}
       <div
         className="circle"
@@ -127,12 +143,74 @@ const Page = () => {
           transform: 'translate(-50%, -50%)',
         }}
       />
-      
-    {/* Mood Labels */}
-    <div style={{ position: 'absolute', top: '5%', left: '50%', transform: 'translateX(-50%)', color: 'red', fontWeight: 'bold' }}>Anger</div>
-    <div style={{ position: 'absolute', top: '50%', right: '5%', color: 'yellow', fontWeight: 'bold' }}>Joy</div>
-    <div style={{ position: 'absolute', bottom: '5%', left: '50%', transform: 'translateX(-50%)', color: 'purple', fontWeight: 'bold' }}>Fear</div> {/* Color changed to blue */}
-    <div style={{ position: 'absolute', top: '50%', left: '5%', color: 'blue', fontWeight: 'bold' }}>Sad</div> {/* Color changed to purple */}
+
+
+{/* Mood Labels */}
+<div style={{
+  position: 'absolute',
+  top: '3%', // Adjusted position for closer to the top
+  left: '50%',
+  transform: 'translateX(-50%)',
+  fontWeight: 'bold',
+  fontSize: '2rem', // Smaller font size
+  background: 'linear-gradient(135deg, rgba(255,0,0,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
+  WebkitBackgroundClip: 'text',   // Clip the background to text
+  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
+}}>Anger</div>
+
+<div style={{
+  position: 'absolute',
+  top: '50%',
+  right: '3%', // Adjusted position for closer to the right
+  fontWeight: 'bold',
+  fontSize: '2rem', // Smaller font size
+  display: 'flex', // Use flexbox for vertical alignment
+  flexDirection: 'column', // Arrange items vertically
+  alignItems: 'center', // Center items
+  background: 'linear-gradient(135deg, rgba(255,255,0,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
+  WebkitBackgroundClip: 'text',   // Clip the background to text
+  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
+}}>
+  J<br/>
+  O<br/>
+  Y
+</div>
+
+<div style={{
+  position: 'absolute',
+  bottom: '3%', // Adjusted position for closer to the bottom
+  left: '50%',
+  transform: 'translateX(-50%)',
+  fontWeight: 'bold',
+  fontSize: '2rem', // Smaller font size
+  background: 'linear-gradient(135deg, rgba(128,0,128,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
+  WebkitBackgroundClip: 'text',   // Clip the background to text
+  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
+}}>Fear</div>
+
+<div style={{
+  position: 'absolute',
+  top: '50%',
+  left: '3%', // Adjusted position for closer to the left
+  fontWeight: 'bold',
+  fontSize: '2rem', // Smaller font size
+  display: 'flex', // Use flexbox for vertical alignment
+  flexDirection: 'column', // Arrange items vertically
+  alignItems: 'center', // Center items
+  background: 'linear-gradient(135deg, rgba(0,0,255,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
+  WebkitBackgroundClip: 'text',   // Clip the background to text
+  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
+}}>
+  S<br/>
+  A<br/>
+  D
+</div>
+
+
     </div>
   );
 };
