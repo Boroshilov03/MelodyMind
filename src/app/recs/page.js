@@ -58,11 +58,6 @@ export default function Recommendations() {
     );
   });
 
-  const navItems = [
-    { name: "Home", link: "/home" },
-    { name: "Chat", link: "/" },
-    { name: "Recommendations", link: "/recs" },
-  ];
 
   return (
     <section style={styles.container}>
