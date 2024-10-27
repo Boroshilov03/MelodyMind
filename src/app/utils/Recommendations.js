@@ -72,6 +72,7 @@ export const fetchRecommendations = async (songLimit, emotion, accessToken) => {
     const data = await response.json();
 
     // Parse the data to extract necessary fields
+    console.log(data)
     return data.tracks.map((track) => ({
       artistName: track.artists[0].name,
       trackName: track.name,
