@@ -31,6 +31,18 @@ const Page = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 }); // To store offset when dragging
   const containerRef = useRef(null);
+  const [topEmotionsData, setTopEmotionsData] = useState({});
+
+  useEffect(() => {
+    // Parse the URL to extract pageData
+    const params = new URLSearchParams(window.location.search);
+    const pageData = params.get('pageData');
+
+    if (pageData) {
+      // Parse the JSON data from the URL
+      setTopEmotionsData(JSON.parse(decodeURIComponent(pageData)));
+    }
+  }, []);
 
   const topEmotions = {
     "joy": "#FFEB3B",
@@ -40,8 +52,8 @@ const Page = () => {
   };
 
   // Extract keys and colors
-  const moodLabels = Object.keys(topEmotions);
-  const colors = Object.values(topEmotions);
+  const moodLabels = Object.keys(topEmotionsData);
+  const colors = Object.values(topEmotionsData);
 
   // Define positions for the mood labels
   const positions = [
@@ -267,6 +279,6 @@ const Page = () => {
       </div>
     </div>
   );
-}
+};
   
 export default Page;

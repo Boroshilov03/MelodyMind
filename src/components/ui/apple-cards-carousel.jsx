@@ -166,8 +166,8 @@ export const Card = ({
     // Prevent default behavior to avoid interfering with the link redirection
     event.stopPropagation();
     
-    // Open the card (if needed for your design)
-    setOpen(true);
+    // // Open the card (if needed for your design)
+    // setOpen(true);
   };
 
   const handleClose = () => {

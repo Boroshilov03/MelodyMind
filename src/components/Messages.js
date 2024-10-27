@@ -135,6 +135,7 @@ export default function Messages() {
     }, {});
 
     console.log("Top 4 Emotions with Colors:", topEmotionsWithColors);
+    window.location.href = `/custom?pageData=${encodeURIComponent(JSON.stringify(topEmotionsWithColors))}`;
   };
 
   const mockMessages = [
