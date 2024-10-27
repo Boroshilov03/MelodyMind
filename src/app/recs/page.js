@@ -11,20 +11,7 @@ export default function Recommendations() { // Remove accessToken prop
     const [recommendations, setRecommendations] = useState([]);
     const [token, setAccessToken] = useState(null); // State for access token
 
-    const userInput = {
-        limit: 1,
-        market: "ES",
-        seed_artists: "4NHQUGzhtTLFvgF5SZesLK",
-        seed_genres: "classical,country",
-        seed_tracks: "0c6xIDDpzE81m2q797ordA",
-        min_acousticness: 0.5,
-        max_acousticness: 1.0,
-        target_acousticness: 0.7,
-        min_danceability: 0.0,
-        max_danceability: 0.5,
-        target_danceability: 0.3,
-        // Add other parameters as necessary
-      };
+    const emotion = "adoration";
 
     // Fetch the access token on component mount
     useEffect(() => {
@@ -43,12 +30,12 @@ export default function Recommendations() { // Remove accessToken prop
 
     // Function to fetch recommendations
     const getRecommendations = async () => {
-        if (userInput && token) { // Check if user input and access token are available
+        if (emotion && token) { // Check if user input and access token are available
             console.log("Generating recommendations..."); // Log to console
-            const tracks = await fetchRecommendations(userInput, token); // Pass access token
+            const tracks = await fetchRecommendations(1, emotion, token); // Pass access token
             setRecommendations(tracks);
         } else {
-            console.log("User Input ",userInput);
+            //console.log("User Input ",userInput);
             console.log("Token ", token);
             console.log("User input or access token is missing."); // Log if inputs are missing
         }

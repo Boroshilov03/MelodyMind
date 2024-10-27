@@ -4,22 +4,65 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { fetchAccessToken } from './token'; // Import the fetchAccessToken function
+import emotionToTrackAttribute from './emotionMap';
 
 // This function fetches recommendations from Spotify based on predefined parameters
-export const fetchRecommendations = async (userInput, accessToken) => {
-  console.log("callig fetching")
-  console.log("userInput: ", userInput)
+export const fetchRecommendations = async (songLimit, emotion, accessToken) => {
   console.log("accessToken: ", accessToken)
+  console.log(emotion)
+  //console.log(emotionToTrackAttribute.has(emotion))
+  console.log(emotionToTrackAttribute.get(emotion))
 
   try {
+    const allAttributes = emotionToTrackAttribute.get(emotion)
+    const trackAttr = allAttributes[0]
+    const url = `https://api.spotify.com/v1/recommendations?limit=${songLimit}
+      &seed_artists=4NHQUGzhtTLFvgF5SZesLK
+      &seed_genres=acoustic,pop,r-n-b
+      &seed_tracks=0c6xIDDpzE81m2q797ordA
+      &min_acousticness=${trackAttr.min_acousticness}
+      &max_acousticness=${trackAttr.max_acousticness}
+      &target_acousticness=${trackAttr.target_acousticness}
+      &min_danceability=${trackAttr.min_danceability}
+      &max_danceability=${trackAttr.max_danceability}
+      &target_danceability=${trackAttr.target_danceability}
+      &min_energy=${trackAttr.min_energy}
+      &max_energy=${trackAttr.max_energy}
+      &target_energy=${trackAttr.target_energy}
+      &min_instrumentalness=${trackAttr.min_instrumentalness}
+      &max_instrumentalness=${trackAttr.max_instrumentalness}
+      &target_instrumentalness=${trackAttr.target_instrumentalness}`.replace(/\s+/g, '').trim();
+
+    console.log("url: ", url);
+
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?limit=${userInput.limit}&market=${userInput.market}&seed_artists=${userInput.seed_artists}&seed_genres=${userInput.seed_genres}&seed_tracks=${userInput.seed_tracks}&target_danceability=${userInput.target_danceability}`,
+      url,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       }
     );
+    // const response = await fetch(
+    //   `https://api.spotify.com/v1/recommendations?limit=${songLimit}\
+    //   &min_acousticness=${trackAttr.min_acousticness}\
+    //   &max_acousticness=${trackAttr.max_acousticness}\
+    //   &target_acousticness=${trackAttr.target_acousticness}\
+    //   &min_danceability=${trackAttr.min_danceability}\
+    //   &max_danceability=${trackAttr.max_danceability}\
+    //   &target_danceability=${trackAttr.target_danceability}\
+    //   &min_energy=${trackAttr.min_energy}\
+    //   &max_energy=${trackAttr.max_energy}\
+    //   &target_energy=${trackAttr.target_energy}\
+    //   &min_instrumentalness=${trackAttr.min_instrumentalness}\
+    //   &max_instrumentalness=${trackAttr.max_instrumentalness}\
+    //   &target_instrumentalness=${trackAttr.target_instrumentalness}`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${accessToken}`,
+    //     },
+    //   }
+    // );
 
     console.log("response: ", response)
     if (!response.ok) {
