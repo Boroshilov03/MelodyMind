@@ -2,11 +2,12 @@ import React from "react";
 import Spline from "@splinetool/react-spline/next";
 import { ShootingStars } from "@/components/ui/shooting-stars";
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import { Spotlight } from "@/components/ui/Spotlight";
 
 const navItems = [
-  { name: "About", link: "/home" },
-  { name: "Home", link: "/" },
-  { name: "Songs", link: "/recs" },
+  { name: "Home", link: "/home" },
+  { name: "Chat", link: "/" },
+  { name: "Recommendations", link: "/recs" },
 ];
 
 function Page() {
@@ -21,7 +22,8 @@ function Page() {
         </h1>
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <Spline scene="https://prod.spline.design/ZaVCUY8TrM6BCcfW/scene.splinecode" />
+        <Spotlight className="ml-10" />
+        <Spline scene="https://prod.spline.design/CrgCVVm0KarNURAL/scene.splinecode" />
       </div>
     </div>
   );

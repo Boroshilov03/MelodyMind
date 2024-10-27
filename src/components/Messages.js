@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVoice } from "@humeai/voice-react";
 import { TextGenerateEffect } from "./ui/text-generate-effect";
@@ -6,14 +6,135 @@ import { TextGenerateEffect2 } from "./ui/text-generate-effect2";
 import { ShootingStars } from "@/components/ui/shooting-stars";
 
 const emotionColors = {
-  admiration: "#FFC107",
-  adoration: "#FF5722",
-  // ... other emotions
+  adoration: "#FFB6C1",
+  aestheticAppreciation: "#ADD8E6",
+  amusement: "#FFFF00",
+  anger: "#FF0000",
+  anxiety: "#A9A9A9",
+  awe: "#E6E6FA",
+  awkwardness: "#FFA500",
+  boredom: "#F5F5DC",
+  calmness: "#90EE90",
+  concentration: "#FFD700",
+  confusion: "#C0C0C0",
+  contemplation: "#DDA0DD",
+  contempt: "#800080",
+  contentment: "#FF7F50",
+  craving: "#FFE4B5",
+  desire: "#FFF0F5",
+  determination: "#4682B4",
+  disappointment: "#FF6347",
+  disgust: "#006400",
+  distress: "#B22222",
+  doubt: "#D3D3D3",
+  ecstasy: "#FFDAB9",
+  embarrassment: "#FF1493",
+  empathicPain: "#8B0000",
+  entrancement: "#7B68EE",
+  envy: "#00FF7F",
+  excitement: "#FF4500",
+  fear: "#00008B",
+  guilt: "#B8860B",
+  horror: "#8B008B",
+  interest: "#4682B4",
+  joy: "#FFFFE0",
+  love: "#FF69B4",
+  nostalgia: "#FFDEAD",
+  pain: "#B22222",
+  pride: "#8A2BE2",
+  realization: "#FFFAF0",
+  relief: "#32CD32",
+  romance: "#FFBFFF",
+  sadness: "#1E90FF",
+  satisfaction: "#FFD700",
+  shame: "#FF8C00",
+  surpriseNegative: "#7FFF00",
+  surprisePositive: "#20B2AA",
+  sympathy: "#5F9EA0",
+  tiredness: "#D2691E",
+  triumph: "#ADFF2F",
 };
 
 export default function Messages() {
   const { messages } = useVoice();
   const chatContainerRef = useRef(null);
+  const [uniqueUserMessages, setUniqueUserMessages] = useState([]);
+
+  // Function to get the top N emotions from the user's message
+  const getTopEmotions = (message) => {
+    const scores = message.models.prosody.scores;
+    const topEmotions = Object.entries(scores)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 4)
+      .map(([emotion, score]) => ({ emotion, score }));
+
+    return topEmotions;
+  };
+
+  // Filter user messages and extract top emotions
+  const userMessagesWithTopEmotions = messages
+    .filter((msg) => msg.type === "user_message")
+    .map((msg) => ({
+      content: msg.message.content,
+      topEmotions: getTopEmotions(msg),
+    }));
+
+  // Function to add new unique messages
+  const addUniqueMessages = () => {
+    userMessagesWithTopEmotions.forEach((newMessage) => {
+      const isDuplicate = uniqueUserMessages.some(
+        (msg) =>
+          msg.content === newMessage.content &&
+          JSON.stringify(msg.topEmotions) ===
+            JSON.stringify(newMessage.topEmotions)
+      );
+
+      if (!isDuplicate) {
+        setUniqueUserMessages((prev) => [...prev, newMessage]);
+      }
+    });
+  };
+
+  // Function to get top emotions from the unique user messages
+  const getTopEmotionsFromMessages = (messages) => {
+    const emotionScores = {};
+
+    messages.forEach((message) => {
+      const topEmotions = message.topEmotions;
+
+      topEmotions.forEach(({ emotion, score }) => {
+        if (emotionScores[emotion]) {
+          emotionScores[emotion] += score; // Sum scores for duplicate emotions
+        } else {
+          emotionScores[emotion] = score; // Initialize score for new emotions
+        }
+      });
+    });
+
+    const emotionEntries = Object.entries(emotionScores);
+    const top4Emotions = emotionEntries
+      .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+      .slice(0, 4)
+      .map(([emotion]) => emotion);
+
+    return top4Emotions;
+  };
+
+  // Log the unique messages and top emotions when the button is clicked
+  const handleLogUniqueMessages = () => {
+    console.log(uniqueUserMessages);
+    const topEmotions = getTopEmotionsFromMessages(uniqueUserMessages);
+    console.log("Top 4 Emotions:", topEmotions);
+    // Map top emotions to colors
+    const topEmotionsWithColors = topEmotions.reduce((acc, emotion) => {
+      if (emotionColors[emotion]) {
+        acc[emotion] = emotionColors[emotion];
+      }
+      return acc;
+    }, {});
+
+    console.log("Top 4 Emotions with Colors:", topEmotionsWithColors);
+  };
 
   const mockMessages = [
     {
@@ -39,23 +160,14 @@ export default function Messages() {
     visible: { opacity: 1, x: 0 },
   };
 
-  const extractTopEmotions = (message) => {
-    const scores = message.models?.prosody?.scores || {};
-    return Object.entries(scores)
-      .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-      .slice(0, 4)
-      .map(([emotion]) => ({
-        emotion,
-        color: emotionColors[emotion] || "#000000",
-      }));
-  };
-
-  // Scroll to the bottom whenever actualMessages change
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
+    addUniqueMessages(); // Call to add unique messages whenever messages change
   }, [actualMessages]);
 
   return (
@@ -64,7 +176,7 @@ export default function Messages() {
 
       <div className="absolute top-8 right-8">
         <motion.div
-          className="w-20 h-20 rounded-full bg-gradient-to-b from-[#e2c697] to-[#d4b381]"
+          className="w-20 h-20 rounded-full bg-gradient-to-b from-[#e2c697] to-[#d4b381] shadow-lg"
           animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
@@ -73,7 +185,7 @@ export default function Messages() {
         </motion.div>
       </div>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto p-6 h-full">
+      <div className="relative z-10 w-full max-w-3xl mx-auto p-6 h-full">
         <motion.div
           className="flex items-center space-x-2 mb-6"
           initial={{ y: -20, opacity: 0 }}
@@ -81,18 +193,20 @@ export default function Messages() {
           transition={{ duration: 0.5 }}
         >
           <div className="w-4 h-4 rounded-full bg-[#e2c697]" />
-          <h1 className="text-white text-2xl font-bold">EMOTION CHAT</h1>
+          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500">
+            MelodyMind
+          </h1>
           <span className="text-[#b198c7] text-sm">POWERED BY HUME</span>
         </motion.div>
 
         <div
-          ref={chatContainerRef} // Attach ref here
-          className="space-y-4 max-h-[calc(100vh-200px)] overflow-hidden" // Updated to remove scrolling
+          ref={chatContainerRef}
+          className="space-y-4 max-h-[calc(100vh-250px)] overflow-y-auto"
         >
           <AnimatePresence>
             {actualMessages.map((msg, index) => {
               const content = msg.message?.content;
-              if (!content) return null; // Skip rendering if content is undefined or empty
+              if (!content) return null;
 
               return (
                 <motion.div
@@ -104,7 +218,7 @@ export default function Messages() {
                   transition={{ delay: index * 0.2 }}
                   className="relative"
                 >
-                  <div className="relative border-l-2 border-[#2a2435] ">
+                  <div className="relative border-l-4 pl-4 border-[#2a2435] rounded-lg">
                     <motion.div
                       className="absolute top-0 w-2 h-2 rounded-full bg-[#e2c697]"
                       animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
@@ -115,8 +229,8 @@ export default function Messages() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
                     >
-                      <div className="flex items-center">
-                        <span className="text-[#e2c697] font-medium ">
+                      <div className="flex items-center mb-1">
+                        <span className="text-[#e2c697] font-semibold">
                           <TextGenerateEffect2
                             duration={1}
                             filter={false}
@@ -134,13 +248,13 @@ export default function Messages() {
                         </span>
                         {msg.type === "user_message" &&
                           msg.message.models?.prosody?.scores && (
-                            <div className="flex gap-2">
-                              {extractTopEmotions(msg.message).map(
-                                ({ emotion, color }) => (
+                            <div className="flex gap-2 ml-3">
+                              {getTopEmotions(msg.message).map(
+                                ({ emotion }) => (
                                   <span
                                     key={emotion}
-                                    className="text-[#b198c7] text-sm"
-                                    style={{ color }}
+                                    className="text-sm"
+                                    style={{ color: emotionColors[emotion] }}
                                   >
                                     + {emotion}
                                   </span>
@@ -150,11 +264,11 @@ export default function Messages() {
                           )}
                       </div>
 
-                      <div className="bg-[#2a2435] rounded-lg  text-white max-w-4xl backdrop-blur-sm bg-opacity-80 py-2">
+                      <div className="bg-[#2a2435] rounded-lg text-white max-w-4xl backdrop-blur-sm bg-opacity-80 py-3 px-4 shadow-md">
                         <TextGenerateEffect
                           duration={2}
                           filter={false}
-                          words={content} // Directly use content, which is guaranteed to exist
+                          words={content}
                           role={
                             msg.type === "assistant_message"
                               ? "Assistant"
@@ -169,6 +283,14 @@ export default function Messages() {
             })}
           </AnimatePresence>
         </div>
+
+        {/* Button to log unique messages and top emotions */}
+        <button
+          onClick={handleLogUniqueMessages}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+        >
+          Log Unique Messages
+        </button>
       </div>
     </div>
   );
