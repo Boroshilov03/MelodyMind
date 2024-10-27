@@ -78,6 +78,7 @@ export const fetchRecommendations = async (songLimit, emotion, accessToken) => {
       trackName: track.name,
       albumImage: track.album.images[0].url,
       spotifyLink: track.external_urls.spotify,
+      uri: track.uri
     }));
   } catch (error) {
     console.error("Error fetching recommendations:", error);

@@ -6,7 +6,7 @@ import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 
 export default function Recommendations() {
   const [recommendations, setRecommendations] = useState([]);
-  const [token, setAccessToken] = useState(null); 
+  const [token, setAccessToken] = useState(null);
   const [emotion, setEmotion] = useState(null);
 
   useEffect(() => {
@@ -35,22 +35,26 @@ export default function Recommendations() {
       if (!emotion) {
         console.log("Emotion not set.");
       } else {
-        console.log("Generating recommendations..."); 
-        const tracks = await fetchRecommendations(7, emotion, token); 
+        console.log("Generating recommendations...");
+        const tracks = await fetchRecommendations(7, emotion, token);
         setRecommendations(tracks);
         console.log(tracks);
       }
     }
   };
 
-  const cards = recommendations.map((track, index) => (
-    <Card key={track.src} card={track} index={index} />
-  ));
+  const cards = recommendations.map((track, index) => {
+    const trackLink = track.spotifyLink; 
+    return (
+      <a href={trackLink} target="_blank" rel="noopener noreferrer" key={track.id || index}>
+        <Card card={track} index={index} />
+      </a>
+    );
+  });
 
   return (
     <section style={styles.container}>
       <h2 style={styles.title}>Recommended Songs</h2>
-
       <p style={styles.emotionDisplay}>Current Emotion: <strong>{emotion}</strong></p>
 
       <button onClick={getRecommendations} style={styles.button}>
@@ -67,7 +71,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start', // top aalign
+    justifyContent: 'flex-start',
     height: '100vh',
     paddingTop: '20px',
     backgroundColor: '#121212',
@@ -77,23 +81,23 @@ const styles = {
   title: {
     fontSize: '48px',
     fontWeight: 'bold',
-    marginBottom: '5px', 
+    marginBottom: '5px',
     background: 'linear-gradient(90deg, #1DB954, #1aa34a)',
     WebkitBackgroundClip: 'text',
     color: 'transparent',
     letterSpacing: '2px',
     textTransform: 'uppercase',
     animation: 'fadeIn 1s ease-in-out',
-    fontFamily: 'Verdana, sans-serif', 
-    textAlign: 'center', 
+    fontFamily: 'Verdana, sans-serif',
+    textAlign: 'center',
   },
   emotionDisplay: {
     fontSize: '24px',
-    marginBottom: '20px', // space btwn emotion display & button
-    textAlign: 'center', 
+    marginBottom: '20px',
+    textAlign: 'center',
   },
   button: {
-    backgroundColor: '#1DB954', // From Spotify
+    backgroundColor: '#1DB954',
     color: '#fff',
     border: 'none',
     borderRadius: '30px',
@@ -102,6 +106,6 @@ const styles = {
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    marginTop: '20px', 
+    marginTop: '20px',
   },
 };
