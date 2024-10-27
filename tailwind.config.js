@@ -13,8 +13,26 @@ module.exports = {
     extend: {
       animation: {
         spotlight: "spotlight 2s ease .75s 1 forwards",
+        typing: "typing 2s steps(20) infinite alternate, blink .7s infinite",
       },
       keyframes: {
+        typing: {
+          "0%": {
+            width: "0%",
+            visibility: "hidden",
+          },
+          "100%": {
+            width: "100%",
+          },
+        },
+        blink: {
+          "50%": {
+            borderColor: "transparent",
+          },
+          "100%": {
+            borderColor: "white",
+          },
+        },
         spotlight: {
           "0%": {
             opacity: 0,
@@ -31,10 +49,10 @@ module.exports = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        dynapuff: ['"DynaPuff"', 'cursive'], // Add DynaPuff font
-        sora: ['"Sora"', 'sans-serif'], // Add Sora font
-        dancing: ['"Dancing Script"', 'cursive'], // Add Dancing Script font
-        ibmPlexMono: ['"IBM Plex Mono"', 'monospace'], // Add IBM Plex Mono font
+        dynapuff: ['"DynaPuff"', "cursive"], // Add DynaPuff font
+        sora: ['"Sora"', "sans-serif"], // Add Sora font
+        dancing: ['"Dancing Script"', "cursive"], // Add Dancing Script font
+        ibmPlexMono: ['"IBM Plex Mono"', "monospace"], // Add IBM Plex Mono font
       },
     },
   },
