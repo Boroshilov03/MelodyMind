@@ -1,6 +1,8 @@
 "use client";
 import { useVoice } from "@humeai/voice-react";
 import { TextGenerateEffect } from "./ui/text-generate-effect";
+import { TextGenerateEffect2 } from "./ui/text-generate-effect2";
+
 
 const emotionColors = {
   admiration: "#FFC107",
@@ -93,8 +95,88 @@ export default function Messages() {
     {
       type: "assistant_message",
       message: {
-        role: "assistant",
-        content: "Don't worry, we will get through this together!",
+        role: "Assistant",
+        content: "Don't worry, we will get through this together! Don't worry, we will get through this together! Don't worry, we will get through this together!",
+      },
+    },
+    {
+      type: "user_message",
+      message: {
+        content: "I'm feeling a bit anxious about the deadline.",
+        models: {
+          prosody: {
+            scores: {
+              anxiety: 0.8,
+              sadness: 0.5,
+              doubt: 0.4,
+              distress: 0.3,
+            },
+          },
+        },
+      },
+    },
+    {
+      type: "user_message",
+      message: {
+        content: "I'm feeling a bit anxious about the deadline.",
+        models: {
+          prosody: {
+            scores: {
+              anxiety: 0.8,
+              sadness: 0.5,
+              doubt: 0.4,
+              distress: 0.3,
+            },
+          },
+        },
+      },
+    },
+    {
+      type: "user_message",
+      message: {
+        content: "I'm feeling a bit anxious about the deadline.",
+        models: {
+          prosody: {
+            scores: {
+              anxiety: 0.8,
+              sadness: 0.5,
+              doubt: 0.4,
+              distress: 0.3,
+            },
+          },
+        },
+      },
+    },
+    {
+      type: "user_message",
+      message: {
+        content: "I'm feeling a bit anxious about the deadline.",
+        models: {
+          prosody: {
+            scores: {
+              anxiety: 0.8,
+              sadness: 0.5,
+              doubt: 0.4,
+              distress: 0.3,
+            },
+          },
+        },
+      },
+    },
+    {
+      type: "user_message",
+      message: {
+        content: "I'm feeling a bit anxious about the deadline.",
+        models: {
+          prosody: {
+            scores: {
+              anxiety: 0.8,
+              sadness: 0.5,
+              doubt: 0.4,
+              distress: 0.3,
+            },
+          },
+        },
       },
     },
   ];
@@ -124,41 +206,56 @@ export default function Messages() {
       };
     });
 
-  return (
-    <div>
-      {userMessagesTopEmotions.map((msg, index) => (
-        <div key={`user_message_${index}`}>
-          <div>
-            {Object.entries(msg.topEmotions).map(([emotion, color]) => (
-              <span
-                key={emotion}
-                style={{
-                  color: color,
-                  marginRight: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                {emotion}: {color}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
-      {actualMessages.map((msg, index) => {
-        if (msg.type === "user_message" || msg.type === "assistant_message") {
-          return (
-            <div key={msg.type + index}>
-              <div>{msg.message.role || "User"}</div>
-              <TextGenerateEffect
-                duration={2}
-                filter={false}
-                words={msg.message.content}
-              />
+    return (
+      <div>
+        {userMessagesTopEmotions.map((msg, index) => (
+          <div key={`user_message_${index}`}>
+            <div>
+              {Object.entries(msg.topEmotions).map(([emotion, color]) => (
+                <span
+                  key={emotion}
+                  style={{
+                    color: color,
+                    marginRight: "8px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {emotion}: {color}
+                </span>
+              ))}
             </div>
-          );
-        }
-        return null;
-      })}
-    </div>
-  );
+          </div>
+        ))}
+        {actualMessages.map((msg, index) => {
+          if (msg.type === "user_message" || msg.type === "assistant_message") {
+            return (
+              <div key={msg.type + index}>
+                {/* Role with separate styles */}
+                <span style={{ fontSize: "0.75em", fontWeight: "bold", color: "#555" }}>
+                  <TextGenerateEffect2
+                    duration={1} // Shorter duration for role
+                    filter={false}
+                    words={msg.message.role || "User"} // Default role text
+                    role={msg.type === "assistant_message" ? "Assistant" : "user"} // Pass the role
+                  />
+                </span>
+                {/* Message content with separate styles */}
+                <span style={{ fontSize: "1.1em", color: "#000" }}>
+                  <TextGenerateEffect
+                    duration={2} // Longer duration for content
+                    filter={false}
+                    words={msg.message.content}
+                    role={msg.type === "assistant_message" ? "Assistant" : "user"} // Pass the role for content if needed
+                  />
+                </span>
+              </div>
+            );
+          }
+          return null;
+        })}
+
+
+      </div>
+    );
+    
 }
