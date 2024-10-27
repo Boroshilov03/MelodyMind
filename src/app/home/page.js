@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Head from "next/head";
 import Spline from "@splinetool/react-spline/next";
@@ -32,6 +33,12 @@ const rightwords = [
 ];
 
 function Page() {
+  const redirectToMessaging = () => {
+    window.location.href = `/`;
+  };
+
+
+
   return (
     <>
       <Head>
@@ -57,6 +64,7 @@ function Page() {
         </div>
       </div>
       <HoverBorderGradient
+        onClick={redirectToMessaging}
         containerClassName="absolute text-lg font-bold"
         duration={2} // Change speed of the gradient rotation (in seconds)
         clockwise={true} // Set to false for counter-clockwise rotation
