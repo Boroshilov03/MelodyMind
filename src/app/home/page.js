@@ -2,6 +2,7 @@ import React from "react";
 import Spline from "@splinetool/react-spline/next";
 
 function page() {
+  // It's a good practice to capitalize component names
   return (
     <div>
       <h1>Welcome</h1>
@@ -10,4 +11,4 @@ function page() {
   );
 }
 
-export default page;
+export default page; // Export the component
