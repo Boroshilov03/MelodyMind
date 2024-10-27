@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils"; // Ensure this utility is defined
 import Link from "next/link";
 import { fetchAccessToken, fetchRefreshToken } from "../../app/utils/token";
 
-const client_id = 'e2ba0c87e0844990a438ef6e39177931';
-const redirect_uri = 'http://localhost:3000/recs';
+const client_id = "e2ba0c87e0844990a438ef6e39177931";
+const redirect_uri = "http://localhost:3000/recs";
 
 export const FloatingNav = ({ navItems, className }) => {
   const handleLogin = () => {
@@ -18,7 +18,7 @@ export const FloatingNav = ({ navItems, className }) => {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const code = query.get("code");
-    
+
     if (code) {
       fetchAccessToken(code)
         .then((token) => {
@@ -30,7 +30,7 @@ export const FloatingNav = ({ navItems, className }) => {
         .catch((error) => {
           console.error("Failed to fetch access token:", error);
         });
-    }  
+    }
   }, []);
 
   return (
