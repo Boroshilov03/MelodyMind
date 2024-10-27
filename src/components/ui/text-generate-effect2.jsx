@@ -10,8 +10,8 @@ export const TextGenerateEffect2 = ({
   duration = 0.5,
   role, // Accept role as a prop
   userIconSize = "50%", // Default size for user icon
-  userIconHeight = "25px", // Default height for user icon
-  userIconWidth = "40px", // Default width for user icon
+  userIconHeight = "23px", // Default height for user icon
+  userIconWidth = "35px", // Default width for user icon
   botIconSize = "50%", // Default size for bot icon
   botIconHeight = "40px", // Default height for bot icon
   botIconWidth = "35px", // Default width for bot icon
