@@ -1,14 +1,16 @@
-'use client';
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { LampDemo } from "@/components/ui/lamp";
 
 // Function to blend colors based on proximity
 const blendColors = (colors) => {
-  let r = 0, g = 0, b = 0;
+  let r = 0,
+    g = 0,
+    b = 0;
   let totalWeight = 0;
 
   colors.forEach(({ color, weight }) => {
-    const [rVal, gVal, bVal] = color.match(/\w\w/g).map(c => parseInt(c, 16));
+    const [rVal, gVal, bVal] = color.match(/\w\w/g).map((c) => parseInt(c, 16));
     r += rVal * weight;
     g += gVal * weight;
     b += bVal * weight;
@@ -28,13 +30,32 @@ const Page = () => {
   const [offset, setOffset] = useState({ x: 0, y: 0 }); // To store offset when dragging
   const containerRef = useRef(null);
 
-  // Mood areas for color blending
-  const colorAreas = [
-    { color: '#ff0000', position: { x: 50, y: 0 }, size: 60 },     // Top (Anger)
-    { color: '#ffff00', position: { x: 100, y: 50 }, size: 60 },   // Right (Joy)
-    { color: '#800080', position: { x: 50, y: 100 }, size: 60 },   // Bottom (Fear)
-    { color: '#0000ff', position: { x: 0, y: 50 }, size: 60 },     // Left (Sad)
+  const topEmotions = {
+    "joy": "#FFEB3B",
+    "contentment": "#8BC34A",
+    "excitement": "#FF9800",
+    "satisfaction": "#4CAF50"
+  };
+
+  // Extract keys and colors
+  const moodLabels = Object.keys(topEmotions);
+  const colors = Object.values(topEmotions);
+
+  // Define positions for the mood labels
+  const positions = [
+    { x: 50, y: 0 },   // Top (Joy)
+    { x: 100, y: 50 }, // Right (Contentment)
+    { x: 50, y: 100 }, // Bottom (Excitement)
+    { x: 0, y: 50 }    // Left (Satisfaction)
   ];
+
+  // Create color areas dynamically
+  const colorAreas = moodLabels.map((mood, index) => ({
+    color: colors[index],
+    position: positions[index],
+    size: 60,
+    moodLabel: mood.charAt(0).toUpperCase() + mood.slice(1), // Capitalize mood label
+  }));
 
   // Calculate the mood color based on moodPosition
   const getMoodColor = () => {
@@ -42,7 +63,9 @@ const Page = () => {
     let colorsInRange = [];
 
     colorAreas.forEach((area) => {
-      const distance = Math.sqrt(Math.pow(x - area.position.x, 2) + Math.pow(y - area.position.y, 2));
+      const distance = Math.sqrt(
+        Math.pow(x - area.position.x, 2) + Math.pow(y - area.position.y, 2)
+      );
       if (distance < area.size) {
         const weight = 1 - distance / area.size; // Weight decreases with distance
         colorsInRange.push({ color: area.color, weight });
@@ -53,20 +76,17 @@ const Page = () => {
       return blendColors(colorsInRange); // Blend colors based on proximity
     }
 
-    return '#000000'; // Default color if no area is selected
+    return "#000000"; // Default color if no area is selected
   };
 
   const handleMouseDown = (event) => {
     setIsDragging(true);
-
-    // Calculate the offset of the cursor from the circle's center
-    const circleX = moodPosition.x * window.innerWidth / 100; // Convert to pixels
-    const circleY = moodPosition.y * window.innerHeight / 100; // Convert to pixels
+    const circleX = (moodPosition.x * window.innerWidth) / 100; // Convert to pixels
+    const circleY = (moodPosition.y * window.innerHeight) / 100; // Convert to pixels
     setOffset({
       x: event.clientX - circleX,
       y: event.clientY - circleY,
     });
-
     event.preventDefault(); // Prevent text selection while dragging
   };
 
@@ -78,35 +98,39 @@ const Page = () => {
     if (isDragging) {
       const container = containerRef.current;
       const rect = container.getBoundingClientRect();
+      const newX = Math.min(
+        Math.max(event.clientX - rect.left - offset.x, 0),
+        rect.width - 50
+      ); // Adjust for circle size
+      const newY = Math.min(
+        Math.max(event.clientY - rect.top - offset.y, 0),
+        rect.height - 50
+      ); // Adjust for circle size
 
-      // Calculate new position based on mouse position plus offset
-      const newX = Math.min(Math.max(event.clientX - rect.left - offset.x, 0), rect.width - 50); // Adjust for circle size
-      const newY = Math.min(Math.max(event.clientY - rect.top - offset.y, 0), rect.height - 50); // Adjust for circle size
-
-      setMoodPosition({ x: (newX / rect.width) * 100, y: (newY / rect.height) * 100 });
+      setMoodPosition({
+        x: (newX / rect.width) * 100,
+        y: (newY / rect.height) * 100,
+      });
     }
   };
-
-  // Change background color based on proximity to mood areas
-  const getBackgroundColor = () => getMoodColor();
 
   useEffect(() => {
     const handleMouseUpEvent = () => {
       setIsDragging(false);
     };
 
-    window.addEventListener('mouseup', handleMouseUpEvent);
-    return () => window.removeEventListener('mouseup', handleMouseUpEvent);
+    window.addEventListener("mouseup", handleMouseUpEvent);
+    return () => window.removeEventListener("mouseup", handleMouseUpEvent);
   }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener("mousemove", handleMouseMove);
     }
     return () => {
       if (container) {
-        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener("mousemove", handleMouseMove);
       }
     };
   }, [isDragging]);
@@ -115,11 +139,11 @@ const Page = () => {
     <div
       ref={containerRef}
       style={{
-        position: 'relative',
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: getBackgroundColor(),
-        overflow: 'hidden',
+        position: "relative",
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: getMoodColor(),
+        overflow: "hidden",
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleMouseDown}
@@ -131,82 +155,46 @@ const Page = () => {
       <div
         className="circle"
         style={{
-          position: 'absolute',
+          position: "absolute",
           left: `${moodPosition.x}%`,
           top: `${moodPosition.y}%`,
-          width: '50px',
-          height: '50px',
-          borderRadius: '50%',
-          backgroundColor: 'rgba(255, 255, 255, 0.3)',
-          backdropFilter: 'blur(5px)',
-          cursor: 'grab',
-          transform: 'translate(-50%, -50%)',
+          width: "50px",
+          height: "50px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(255, 255, 255, 0.3)",
+          backdropFilter: "blur(5px)",
+          cursor: "grab",
+          transform: "translate(-50%, -50%)",
         }}
       />
 
+      {/* Mood Labels */}
+      {colorAreas.map((area, index) => (
 
-{/* Mood Labels */}
-<div style={{
-  position: 'absolute',
-  top: '3%', // Adjusted position for closer to the top
-  left: '50%',
-  transform: 'translateX(-50%)',
-  fontWeight: 'bold',
-  fontSize: '2rem', // Smaller font size
-  background: 'linear-gradient(135deg, rgba(255,0,0,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
-  WebkitBackgroundClip: 'text',   // Clip the background to text
-  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
-  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
-}}>Anger</div>
-
-<div style={{
-  position: 'absolute',
-  top: '50%',
-  right: '3%', // Adjusted position for closer to the right
-  fontWeight: 'bold',
-  fontSize: '2rem', // Smaller font size
-  display: 'flex', // Use flexbox for vertical alignment
-  flexDirection: 'column', // Arrange items vertically
-  alignItems: 'center', // Center items
-  background: 'linear-gradient(135deg, rgba(255,255,0,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
-  WebkitBackgroundClip: 'text',   // Clip the background to text
-  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
-  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
-}}>
-  JOY
-</div>
-
-<div style={{
-  position: 'absolute',
-  bottom: '3%', // Adjusted position for closer to the bottom
-  left: '50%',
-  transform: 'translateX(-50%)',
-  fontWeight: 'bold',
-  fontSize: '2rem', // Smaller font size
-  background: 'linear-gradient(135deg, rgba(128,0,128,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
-  WebkitBackgroundClip: 'text',   // Clip the background to text
-  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
-  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
-}}>Fear</div>
-
-<div style={{
-  position: 'absolute',
-  top: '50%',
-  left: '3%', // Adjusted position for closer to the left
-  fontWeight: 'bold',
-  fontSize: '2rem', // Smaller font size
-  display: 'flex', // Use flexbox for vertical alignment
-  flexDirection: 'column', // Arrange items vertically
-  alignItems: 'center', // Center items
-  background: 'linear-gradient(135deg, rgba(0,0,255,0.7), rgba(255,255,255,0.7))', // Gradient color for glassy effect
-  WebkitBackgroundClip: 'text',   // Clip the background to text
-  WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
-  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
-}}>
-  SAD
-</div>
-
-
+        
+        <div key={index} style={{
+          position: 'absolute',
+          left: area.position.x === 0 ? '18%' : area.position.x === 100 ? 'auto' : '50%',
+          right: area.position.x === 100 ? '3%' : 'auto',
+          bottom: area.position.y === 100 ? '3%' : 'auto',
+          top: area.position.y === 0 ? '3%' : area.position.y === 50 ? '50%' : 'auto',
+          transform: area.position.x === 0 ? 'translate(-100%, -50%)' : 
+                    area.position.x === 100 ? 'translate(0, -50%)' : 
+                    area.position.y === 0 ? 'translate(-50%, 0)' : 
+                    'translate(-50%, 0)',
+          fontWeight: 'bold',
+          fontSize: '2rem', // Smaller font size
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          background: `linear-gradient(135deg, ${area.color}, rgba(255,255,255,0.7))`, // Gradient color for glassy effect
+          WebkitBackgroundClip: 'text',   // Clip the background to text
+          WebkitTextFillColor: 'transparent',  // Fill the text with transparent for glass effect
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', // Reduced shadow for a smaller look
+        }}>
+          {area.moodLabel.toUpperCase()} {/* Update mood label */}
+        </div>
+      ))}
     </div>
   );
 };

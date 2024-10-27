@@ -3,7 +3,6 @@ import { useVoice } from "@humeai/voice-react";
 import { TextGenerateEffect } from "./ui/text-generate-effect";
 import { TextGenerateEffect2 } from "./ui/text-generate-effect2";
 
-
 const emotionColors = {
   admiration: "#FFC107",
   adoration: "#FF5722",
@@ -256,6 +255,8 @@ export default function Messages() {
 
 
       </div>
+      
     );
+    
     
 }
